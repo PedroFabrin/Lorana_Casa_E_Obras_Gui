@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Open Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-gray-150: #ebedf0;
+  --container-7xl: 90rem;
+}
+
+:root {
+  --cta: #c36a2e;
+  --cta-hover: #a85825;
+}
+
+.admin-theme {
+  --cta: #b97a4f;
+  --cta-hover: #a56940;
+}
+
+body {
+  font-family: var(--font-body);
+  color: #0b1b2b;
+  background-color: #f8f9fa;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.2s ease-out;
+}
+
+@keyframes toast-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-toast-fade-in {
+  animation: toast-fade-in 0.2s ease-out;
+}
