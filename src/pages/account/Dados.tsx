@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api, apiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/Button";
+import { passwordError } from "@/lib/validation";
 
 export function Dados() {
   const { user, refreshMe } = useAuthStore();
@@ -14,6 +15,13 @@ export function Dados() {
     e.preventDefault();
     setError("");
     setMessage("");
+    if (form.password) {
+      const pwError = passwordError(form.password);
+      if (pwError) {
+        setError(pwError);
+        return;
+      }
+    }
     setSaving(true);
     try {
       const payload: Record<string, string | number> = { user_id: user!.id, name: form.name, email: form.email, cpf: form.cpf };
@@ -63,10 +71,12 @@ export function Dados() {
           <input
             type="password"
             placeholder="Deixe em branco para manter"
+            minLength={8}
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-[#B97A4F]"
           />
+          <p className="mt-1 text-xs text-gray-500">Mínimo de 8 caracteres.</p>
         </div>
         {message && <p className="text-sm text-green-600 sm:col-span-2">{message}</p>}
         {error && <p className="text-sm text-red-600 sm:col-span-2">{error}</p>}

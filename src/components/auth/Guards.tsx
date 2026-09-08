@@ -18,7 +18,7 @@ export function RequireAdmin() {
   if (!token) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  if (user && user.role !== "admin") {
+  if (!user || user.role !== "admin") {
     return <Navigate to="/" replace />;
   }
   return <Outlet />;

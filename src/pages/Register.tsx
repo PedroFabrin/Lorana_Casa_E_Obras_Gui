@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { api, apiErrorMessage } from "@/lib/api";
 import { useAuthStore } from "@/store/auth";
 import { Button } from "@/components/ui/Button";
+import { passwordError } from "@/lib/validation";
 
 export function Register() {
   const navigate = useNavigate();
@@ -14,6 +15,11 @@ export function Register() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    const pwError = passwordError(form.password);
+    if (pwError) {
+      setError(pwError);
+      return;
+    }
     setLoading(true);
     try {
       await api.post("/users/create", form);
@@ -64,10 +70,12 @@ export function Register() {
           <input
             type="password"
             required
+            minLength={8}
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
             className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-transparent focus:ring-2 focus:ring-[#C36A2E]"
           />
+          <p className="mt-1 text-xs text-gray-500">Mínimo de 8 caracteres.</p>
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <Button type="submit" fullWidth disabled={loading}>

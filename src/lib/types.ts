@@ -114,6 +114,10 @@ export interface Order {
   payment?: Payment | null;
 }
 
+export interface CheckoutResult extends Order {
+  checkout_url: string | null;
+}
+
 export interface LowStockProduct {
   id: number;
   nome: string;

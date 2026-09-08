@@ -7,7 +7,7 @@ import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/format";
-import type { Address, FormaPagamento } from "@/lib/types";
+import type { Address, CheckoutResult, FormaPagamento } from "@/lib/types";
 
 const steps = ["Identificação", "Entrega", "Pagamento"] as const;
 
@@ -58,9 +58,16 @@ export function Checkout() {
     setSubmitting(true);
     setError("");
     try {
-      const { data } = await api.post("/order/checkout", { adress_id: addressId, forma_pagamento: formaPagamento });
+      const { data } = await api.post<{ data: CheckoutResult }>("/order/checkout", {
+        adress_id: addressId,
+        forma_pagamento: formaPagamento,
+      });
       await fetchCart();
-      navigate(`/conta/pedidos/${data.data.id}`);
+      if (data.data.checkout_url) {
+        window.location.href = data.data.checkout_url;
+      } else {
+        navigate(`/conta/pedidos/${data.data.id}`);
+      }
     } catch (err) {
       setError(apiErrorMessage(err));
     } finally {

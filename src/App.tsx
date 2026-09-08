@@ -9,6 +9,7 @@ import { ProductList } from "@/pages/ProductList";
 import { ProductDetail } from "@/pages/ProductDetail";
 import { Cart } from "@/pages/Cart";
 import { Checkout } from "@/pages/Checkout";
+import { PaymentReturn } from "@/pages/PaymentReturn";
 import { Login } from "@/pages/Login";
 import { Register } from "@/pages/Register";
 
@@ -36,6 +37,9 @@ function App() {
           <Route element={<RequireAuth />}>
             <Route path="/carrinho" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/pagamento/sucesso" element={<PaymentReturn />} />
+            <Route path="/pagamento/falha" element={<PaymentReturn />} />
+            <Route path="/pagamento/pendente" element={<PaymentReturn />} />
 
             <Route path="/conta" element={<AccountLayout />}>
               <Route index element={<AccountPedidos />} />
