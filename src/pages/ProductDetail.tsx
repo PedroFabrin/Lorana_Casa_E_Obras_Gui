@@ -5,7 +5,7 @@ import { api } from "@/lib/api";
 import { useProductImage } from "@/hooks/useProductImage";
 import { useCartStore } from "@/store/cart";
 import { useCartToastStore } from "@/store/cartToast";
-import { useAuthStore } from "@/store/auth";
+import { useRequireLogin } from "@/hooks/useRequireLogin";
 import { Button } from "@/components/ui/Button";
 import { ProductCard } from "@/components/ProductCard";
 import { formatPrice } from "@/lib/format";
@@ -14,7 +14,7 @@ import type { Category, Product } from "@/lib/types";
 export function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token } = useAuthStore();
+  const requireLogin = useRequireLogin();
   const { addItem } = useCartStore();
   const showToast = useCartToastStore((s) => s.show);
 
@@ -48,10 +48,7 @@ export function ProductDetail() {
   const lowStock = !outOfStock && product.quantidade_estoque <= product.estoque_minimo;
 
   async function handleAdd(goToCart: boolean) {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    if (!requireLogin()) return;
     setAdding(true);
     try {
       await addItem(product!.id, quantidade);

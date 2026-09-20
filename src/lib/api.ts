@@ -18,10 +18,8 @@ api.interceptors.response.use(
   (error) => {
     const hadToken = Boolean(error.config?.headers?.Authorization);
     if (error.response?.status === 401 && hadToken) {
+      // Só limpa a sessão: as rotas protegidas (RequireAuth) redirecionam sozinhas; as públicas continuam abertas.
       useAuthStore.getState().logout();
-      if (!window.location.pathname.startsWith("/login")) {
-        window.location.href = "/login";
-      }
     }
     return Promise.reject(error);
   },

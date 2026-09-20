@@ -19,7 +19,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (user) fetchCart();
+    if (user) fetchCart().catch(() => {});
   }, [user, fetchCart]);
 
   useEffect(() => {

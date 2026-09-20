@@ -3,6 +3,7 @@ import { ShoppingCart, ImageOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useProductImage } from "@/hooks/useProductImage";
+import { useRequireLogin } from "@/hooks/useRequireLogin";
 import { useCartStore } from "@/store/cart";
 import { useCartToastStore } from "@/store/cartToast";
 import { formatPrice } from "@/lib/format";
@@ -11,6 +12,7 @@ import type { Product } from "@/lib/types";
 export function ProductCard({ product }: { product: Product }) {
   const imageUrl = useProductImage(product.id);
   const { addItem } = useCartStore();
+  const requireLogin = useRequireLogin();
   const showToast = useCartToastStore((s) => s.show);
   const [adding, setAdding] = useState(false);
 
@@ -20,6 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
   const outOfStock = product.quantidade_estoque <= 0 || product.status === "inativo";
 
   async function handleAdd() {
+    if (!requireLogin()) return;
     setAdding(true);
     try {
       await addItem(product.id, 1);

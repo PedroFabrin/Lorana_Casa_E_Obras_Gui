@@ -17,8 +17,8 @@ export function Login() {
     setError("");
     try {
       await login(email, password);
-      const from = (location.state as { from?: Location })?.from?.pathname ?? "/";
-      navigate(from, { replace: true });
+      const from = (location.state as { from?: Location })?.from;
+      navigate(from ? `${from.pathname}${from.search}` : "/", { replace: true });
     } catch (err) {
       setError(apiErrorMessage(err, "E-mail ou senha inválidos."));
     }
