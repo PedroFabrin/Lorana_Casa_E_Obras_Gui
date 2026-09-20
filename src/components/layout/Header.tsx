@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, User, ShoppingCart, Menu, X } from "lucide-react";
+import { Search, User, ShoppingCart, Menu, X, LogOut } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
+import { useLogout } from "@/hooks/useLogout";
 import { useCartStore } from "@/store/cart";
 import { api } from "@/lib/api";
 import { LogoIcon } from "@/components/layout/LogoIcon";
@@ -11,6 +12,7 @@ export function Header() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { user } = useAuthStore();
+  const logout = useLogout();
   const { cart, itemCount, fetchCart } = useCartStore();
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState(params.get("q") ?? "");
@@ -69,6 +71,17 @@ export function Header() {
             <User size={20} />
             <span className="hidden md:inline">{user ? user.name.split(" ")[0] : "Minha Conta"}</span>
           </Link>
+          {user && (
+            <button
+              type="button"
+              aria-label="Sair"
+              onClick={logout}
+              className="flex items-center gap-1.5 rounded-md px-2 py-2 hover:bg-[#1F3A5F]"
+            >
+              <LogOut size={20} />
+              <span className="hidden md:inline">Sair</span>
+            </button>
+          )}
           <Link
             to="/carrinho"
             aria-label="Ver carrinho"

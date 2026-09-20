@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, CreditCard, QrCode } from "lucide-react";
 import { clsx } from "clsx";
@@ -7,6 +7,8 @@ import { useAuthStore } from "@/store/auth";
 import { useCartStore } from "@/store/cart";
 import { Button } from "@/components/ui/Button";
 import { formatPrice } from "@/lib/format";
+import { PaymentPending } from "@/components/checkout/PaymentPending";
+import { LAST_ORDER_KEY, openPaymentWindow } from "@/lib/payment";
 import type { Address, CheckoutResult, FormaPagamento } from "@/lib/types";
 
 const steps = ["Identificação", "Entrega", "Pagamento"] as const;
@@ -23,6 +25,8 @@ export function Checkout() {
   const [formaPagamento, setFormaPagamento] = useState<FormaPagamento>("cartao");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [pendingOrder, setPendingOrder] = useState<CheckoutResult | null>(null);
+  const popupRef = useRef<Window | null>(null);
 
   useEffect(() => {
     fetchCart();
@@ -57,22 +61,35 @@ export function Checkout() {
     }
     setSubmitting(true);
     setError("");
+    // Precisa abrir dentro do clique (antes de qualquer await), senão o navegador bloqueia o popup.
+    const popup = openPaymentWindow();
+    popupRef.current = popup;
+    if (popup) popup.document.body.innerText = "Carregando pagamento...";
     try {
       const { data } = await api.post<{ data: CheckoutResult }>("/order/checkout", {
         adress_id: addressId,
         forma_pagamento: formaPagamento,
       });
       await fetchCart();
-      if (data.data.checkout_url) {
-        window.location.href = data.data.checkout_url;
+      const { checkout_url } = data.data;
+      if (checkout_url) {
+        localStorage.setItem(LAST_ORDER_KEY, String(data.data.id));
+        setPendingOrder(data.data);
+        if (popup && !popup.closed) popup.location.href = checkout_url;
       } else {
+        popup?.close();
         navigate(`/conta/pedidos/${data.data.id}`);
       }
     } catch (err) {
+      popup?.close();
       setError(apiErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (pendingOrder) {
+    return <PaymentPending order={pendingOrder} popupRef={popupRef} />;
   }
 
   if (!cart || cart.items.length === 0) {

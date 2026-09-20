@@ -40,6 +40,7 @@ function App() {
             <Route path="/pagamento/sucesso" element={<PaymentReturn />} />
             <Route path="/pagamento/falha" element={<PaymentReturn />} />
             <Route path="/pagamento/pendente" element={<PaymentReturn />} />
+            <Route path="/pagamento-concluido" element={<PaymentReturn />} />
 
             <Route path="/conta" element={<AccountLayout />}>
               <Route index element={<AccountPedidos />} />

@@ -11,6 +11,7 @@ interface AuthState {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  signOut: () => Promise<void>;
   refreshMe: () => Promise<void>;
 }
 
@@ -43,6 +44,18 @@ export const useAuthStore = create<AuthState>()(
       },
       logout() {
         set({ token: null, user: null });
+      },
+      async signOut() {
+        const { token } = get();
+        try {
+          if (token) {
+            await axios.post(`${API_URL}/auth/logout`, null, { headers: { Authorization: `Bearer ${token}` } });
+          }
+        } catch {
+          // o token local é descartado mesmo se o servidor não responder
+        } finally {
+          set({ token: null, user: null });
+        }
       },
       async refreshMe() {
         const { token, user } = get();

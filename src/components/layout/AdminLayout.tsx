@@ -1,7 +1,8 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, Package, ClipboardList, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Package, ClipboardList, ArrowLeft, LogOut } from "lucide-react";
 import { clsx } from "clsx";
 import { LogoIcon } from "@/components/layout/LogoIcon";
+import { useLogout } from "@/hooks/useLogout";
 
 const navItems = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -10,6 +11,8 @@ const navItems = [
 ];
 
 export function AdminLayout() {
+  const logout = useLogout();
+
   return (
     <div className="admin-theme flex min-h-screen flex-col bg-gray-100">
       <header className="sticky top-0 z-50 flex items-center justify-between bg-[#0A2540] px-4 py-3 text-white md:px-6">
@@ -20,9 +23,19 @@ export function AdminLayout() {
             <div className="hidden text-xs font-bold uppercase tracking-wide text-gray-300 sm:block">Painel Administrativo</div>
           </div>
         </Link>
-        <Link to="/" aria-label="Voltar à loja" className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-white/80 hover:bg-[#1a3550]">
-          <ArrowLeft size={16} /> <span className="hidden sm:inline">Voltar à Loja</span>
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link to="/" aria-label="Voltar à loja" className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-white/80 hover:bg-[#1a3550]">
+            <ArrowLeft size={16} /> <span className="hidden sm:inline">Voltar à Loja</span>
+          </Link>
+          <button
+            type="button"
+            aria-label="Sair"
+            onClick={logout}
+            className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-white/80 hover:bg-[#1a3550]"
+          >
+            <LogOut size={16} /> <span className="hidden sm:inline">Sair</span>
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1">

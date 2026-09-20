@@ -5,6 +5,7 @@ import { api } from "@/lib/api";
 import { OrderStatusBadge } from "@/components/ui/StatusBadge";
 import { Button } from "@/components/ui/Button";
 import { formatDate, formatOrderCode, formatPrice } from "@/lib/format";
+import { LAST_ORDER_KEY, PAYMENT_WINDOW_NAME } from "@/lib/payment";
 import type { Order } from "@/lib/types";
 
 const POLL_INTERVAL_MS = 3000;
@@ -12,10 +13,21 @@ const MAX_POLL_ATTEMPTS = 15;
 
 export function PaymentReturn() {
   const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("external_reference") ?? searchParams.get("order_id");
+  const orderId =
+    searchParams.get("order_nsu") ??
+    searchParams.get("external_reference") ??
+    searchParams.get("order_id") ??
+    localStorage.getItem(LAST_ORDER_KEY);
+  const isPaymentPopup = window.name === PAYMENT_WINDOW_NAME;
   const [order, setOrder] = useState<Order | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [isPolling, setIsPolling] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  function handleRefresh() {
+    setIsPolling(true);
+    setRefreshKey((k) => k + 1);
+  }
 
   useEffect(() => {
     if (!orderId) return;
@@ -45,7 +57,14 @@ export function PaymentReturn() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [orderId]);
+  }, [orderId, refreshKey]);
+
+  const finalStatus = order !== null && order.status !== "pendente";
+  useEffect(() => {
+    if (!isPaymentPopup || !finalStatus) return;
+    const timer = setTimeout(() => window.close(), 2500);
+    return () => clearTimeout(timer);
+  }, [isPaymentPopup, finalStatus]);
 
   if (!orderId || notFound) {
     return (
@@ -84,7 +103,7 @@ export function PaymentReturn() {
       ? "Pagamento aprovado! Seu pedido já está sendo processado."
       : order.status === "nao_aprovado" || order.status === "cancelado"
         ? "Não conseguimos confirmar seu pagamento. Você pode tentar novamente ou entrar em contato com o suporte."
-        : "Ainda estamos aguardando a confirmação do pagamento. Vamos avisar você por e-mail assim que ela chegar.";
+        : "Ainda não recebemos a confirmação do pagamento. Se você já pagou, ela pode levar alguns minutos — use o botão abaixo para atualizar.";
 
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-4 px-6 py-16 text-center">
@@ -95,6 +114,11 @@ export function PaymentReturn() {
       <p className="text-sm font-medium text-[#0F2A3F]">
         Total: {formatPrice(order.total)} — realizado em {formatDate(order.created_at)}
       </p>
+      {order.status === "pendente" && !isPolling && (
+        <Button variant="outline" onClick={handleRefresh}>
+          Atualizar status
+        </Button>
+      )}
       <Link to={`/conta/pedidos/${order.id}`}>
         <Button>Ver detalhes do pedido</Button>
       </Link>
