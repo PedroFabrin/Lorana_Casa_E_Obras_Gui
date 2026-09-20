@@ -167,11 +167,9 @@ export function ProductDetail() {
       {related.length > 0 && (
         <div className="mt-12">
           <h2 className="mb-5 text-xl font-bold text-[#0B1B2B]">Produtos Relacionados</h2>
-          <div className="flex flex-wrap gap-5">
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
             {related.map((p) => (
-              <div key={p.id} className="w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
-                <ProductCard product={p} />
-              </div>
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </div>

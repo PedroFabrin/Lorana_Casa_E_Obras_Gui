@@ -88,11 +88,9 @@ export function Home() {
               Ver Todos <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="flex flex-wrap gap-5">
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
             {products.map((p) => (
-              <div key={p.id} className="w-[calc(50%-10px)] sm:w-[calc(25%-15px)]">
-                <ProductCard product={p} />
-              </div>
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         </div>
