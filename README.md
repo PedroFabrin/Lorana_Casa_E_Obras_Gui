@@ -1,73 +1,87 @@
-# React + TypeScript + Vite
+# Lorana Casa & Obras — Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web frontend for **Lorana Casa & Obras**, an e-commerce platform for a Brazilian construction materials store. Built as my final project (TCC) for the Information Systems degree at Toledo Prudente Centro Universitário.
 
-Currently, two official plugins are available:
+🔗 **Live demo:** https://lorana-web.fly.dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+⚙️ **Backend API:** [Lorana_Casa_E_Obras](https://github.com/PedroFabrin/Lorana_Casa_E_Obras)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Storefront**
+- Home page with hero carousel and featured products
+- Product listing and product detail pages
+- Shopping cart with instant feedback
+- Checkout with online payment and a payment return page
 
-## Expanding the ESLint configuration
+**Customer area**
+- Sign up and login
+- Profile data, delivery addresses and order history
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Admin panel**
+- Sales dashboard with charts
+- Product management (create, edit, images) and categories
+- Order management
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+| Purpose | Technology |
+|---|---|
+| UI | React, TypeScript |
+| Build | Vite |
+| Styling | Tailwind CSS, lucide-react icons |
+| State | Zustand |
+| Routing | React Router |
+| HTTP | Axios |
+| Charts | Recharts |
+| Deployment | Docker, Nginx, Fly.io |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project structure
+
+```
+src/
+├── pages/        # Storefront, account/ and admin/ pages
+├── components/   # Layout, UI, auth and checkout components
+├── store/        # Zustand stores (auth, cart)
+├── hooks/        # Custom hooks (auth guard, logout, product images)
+└── lib/          # API client, types, validation, formatting and payment helpers
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**Requirements:** Node.js (LTS) and the [backend API](https://github.com/PedroFabrin/Lorana_Casa_E_Obras) running.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Install the dependencies:
+
+```bash
+npm install
 ```
+
+2. Create a `.env` file pointing to the API:
+
+```bash
+VITE_API_URL=http://localhost:8000
+```
+
+3. Start the dev server:
+
+```bash
+npm run dev
+```
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the development server |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview the production build |
+| `npm run lint` | Run ESLint |
+
+## Deployment
+
+The production build is served by Nginx in a Docker container (`Dockerfile.prod`) and deployed on **Fly.io**.
+
+## Author
+
+**Pedro Fabrin** — Backend Developer (Python, FastAPI, AI/LLMs)
+
+[LinkedIn](https://www.linkedin.com/in/pedro-henrique-parizoto-fabrin-08765325b) · [GitHub](https://github.com/PedroFabrin)
